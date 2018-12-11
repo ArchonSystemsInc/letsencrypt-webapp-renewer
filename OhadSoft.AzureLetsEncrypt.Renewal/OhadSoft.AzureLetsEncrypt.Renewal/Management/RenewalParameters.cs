@@ -18,6 +18,9 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
         public string ServicePlanResourceGroup { get; }
         public string SiteSlotName { get; }
         public string GroupName { get; }
+        public string OtherWebAppResourceGroup { get; }
+        public string OtherWebApp { get; }
+        public string OtherSlotName { get; }
         public bool UseIpBasedSsl { get; }
         public int RsaKeyLength { get; }
         public Uri AcmeBaseUri { get; }
@@ -39,6 +42,9 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
             string servicePlanResourceGroup = null,
             string groupName = null,
             string siteSlotName = null,
+            string otherWebAppResourceGroup = null,
+            string otherWebApp = null,
+            string otherSlotName = null,
             bool useIpBasedSsl = false,
             int rsaKeyLength = 2048,
             Uri acmeBaseUri = null,
@@ -55,10 +61,13 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
             Hosts = VerifyHosts(hosts, nameof(hosts));
             Email = VerifyEmail(email, nameof(email));
             ClientId = VerifyGuid(clientId, nameof(clientId));
-            ClientSecret = VerifyString(clientSecret, nameof(clientSecret), allowWhitespace: true);
+            ClientSecret = VerifyString(clientSecret, nameof(clientSecret), true);
             ServicePlanResourceGroup = VerifyOptionalString(servicePlanResourceGroup, nameof(servicePlanResourceGroup));
             GroupName = VerifyOptionalString(groupName, nameof(groupName));
             SiteSlotName = VerifyOptionalString(siteSlotName, nameof(siteSlotName));
+            OtherWebAppResourceGroup = VerifyOptionalString(otherWebAppResourceGroup, nameof(otherWebAppResourceGroup));
+            OtherWebApp = VerifyOptionalString(otherWebApp, nameof(otherWebApp));
+            OtherSlotName = VerifyOptionalString(otherSlotName, nameof(otherSlotName));
             UseIpBasedSsl = useIpBasedSsl;
             RsaKeyLength = VerifyPositiveInteger(rsaKeyLength, nameof(rsaKeyLength));
             AcmeBaseUri = VerifyOptionalUri(acmeBaseUri, nameof(acmeBaseUri));
@@ -85,7 +94,7 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
 
         private static string VerifyOptionalString(string str, string name)
         {
-            return str == null || !str.All(Char.IsWhiteSpace)
+            return str == null || !str.All(char.IsWhiteSpace)
                 ? str
                 : throw new ArgumentException("String must be either null or non-whitespace", name);
         }
@@ -99,7 +108,7 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
 
         private static string VerifyEmail(string email, string name)
         {
-            return !String.IsNullOrWhiteSpace(email) && email.Contains("@") && email.Length >= 3 && email.Length <= 254
+            return !string.IsNullOrWhiteSpace(email) && email.Contains("@") && email.Length >= 3 && email.Length <= 254
                    && !email.StartsWith("@", StringComparison.OrdinalIgnoreCase) && !email.EndsWith("@", StringComparison.OrdinalIgnoreCase)
                 ? email
                 : throw new ArgumentException("E-mail address must not be null and must be valid", name);
@@ -107,7 +116,7 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
 
         private static string VerifyString(string str, string name, bool allowWhitespace = false)
         {
-            var valid = allowWhitespace ? !String.IsNullOrEmpty(str) : !String.IsNullOrWhiteSpace(str);
+            var valid = allowWhitespace ? !string.IsNullOrEmpty(str) : !string.IsNullOrWhiteSpace(str);
             return valid
                 ? str
                 : throw new ArgumentException("String cannot be null or whitespace", name);
@@ -129,7 +138,17 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
 
         public override string ToString()
         {
-            return Invariant($"{nameof(SubscriptionId)}: {SubscriptionId}, {nameof(TenantId)}: {TenantId}, {nameof(ResourceGroup)}: {ResourceGroup}, {nameof(WebApp)}: {WebApp}, {nameof(Hosts)}: {String.Join(", ", Hosts)}, {nameof(Email)}: {Email}, {nameof(ClientId)}: {ClientId}, {nameof(ClientSecret)}: <SCRUBBED>, {nameof(ServicePlanResourceGroup)}: {ServicePlanResourceGroup}, {nameof(GroupName)}: {GroupName}, {nameof(SiteSlotName)}: {SiteSlotName}, {nameof(UseIpBasedSsl)}: {UseIpBasedSsl}, {nameof(RsaKeyLength)}: {RsaKeyLength}, {nameof(AcmeBaseUri)}: {AcmeBaseUri}, {nameof(RenewXNumberOfDaysBeforeExpiration)}: {RenewXNumberOfDaysBeforeExpiration}, {nameof(AuthenticationUri)}: {AuthenticationUri}, {nameof(AzureTokenAudience)}: {AzureTokenAudience}, {nameof(AzureManagementEndpoint)}: {AzureManagementEndpoint}, {nameof(AzureDefaultWebsiteDomainName)}: {AzureDefaultWebsiteDomainName}");
+            return Invariant(
+                    $@"{nameof(SubscriptionId)}: {SubscriptionId}, {nameof(TenantId)}: {TenantId}, 
+                        {nameof(ResourceGroup)}: {ResourceGroup}, {nameof(WebApp)}: {WebApp},
+                        {nameof(Hosts)}: {string.Join(", ", Hosts)}, {nameof(Email)}: {Email},
+                        {nameof(ClientId)}: {ClientId}, {nameof(ClientSecret)}: <SCRUBBED>,
+                        {nameof(ServicePlanResourceGroup)}: {ServicePlanResourceGroup},
+                        {nameof(GroupName)}: {GroupName}, {nameof(SiteSlotName)}: {SiteSlotName},
+                        {nameof(UseIpBasedSsl)}: {UseIpBasedSsl}, {nameof(RsaKeyLength)}: {RsaKeyLength},
+                        {nameof(AcmeBaseUri)}: {AcmeBaseUri}, {nameof(RenewXNumberOfDaysBeforeExpiration)}: {RenewXNumberOfDaysBeforeExpiration},
+                        {nameof(AuthenticationUri)}: {AuthenticationUri}, {nameof(AzureTokenAudience)}: {AzureTokenAudience},
+                        {nameof(AzureManagementEndpoint)}: {AzureManagementEndpoint}, {nameof(AzureDefaultWebsiteDomainName)}: {AzureDefaultWebsiteDomainName}");
         }
 
         public bool Equals(RenewalParameters other)
@@ -147,6 +166,9 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
                 && string.Equals(ClientSecret, other.ClientSecret)
                 && string.Equals(ServicePlanResourceGroup, other.ServicePlanResourceGroup)
                 && string.Equals(SiteSlotName, other.SiteSlotName)
+                && string.Equals(OtherWebAppResourceGroup, other.OtherWebAppResourceGroup)
+                && string.Equals(OtherWebApp, other.OtherWebApp)
+                && string.Equals(OtherSlotName, other.OtherSlotName)
                 && UseIpBasedSsl == other.UseIpBasedSsl
                 && RsaKeyLength == other.RsaKeyLength
                 && Equals(AcmeBaseUri, other.AcmeBaseUri)
@@ -179,6 +201,9 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
                 hashCode = (hashCode * 397) ^ (ClientSecret != null ? ClientSecret.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (ServicePlanResourceGroup != null ? ServicePlanResourceGroup.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (SiteSlotName != null ? SiteSlotName.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (OtherWebAppResourceGroup != null ? OtherWebAppResourceGroup.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (OtherWebApp != null ? OtherWebApp.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (OtherSlotName != null ? OtherSlotName.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ UseIpBasedSsl.GetHashCode();
                 hashCode = (hashCode * 397) ^ RsaKeyLength;
                 hashCode = (hashCode * 397) ^ (AcmeBaseUri != null ? AcmeBaseUri.GetHashCode() : 0);

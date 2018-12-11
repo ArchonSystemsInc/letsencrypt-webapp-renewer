@@ -5,7 +5,22 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
 {
     public sealed class SharedRenewalParameters
     {
-        public SharedRenewalParameters(string resourceGroup, Guid? subscriptionId, string tenantId, Guid? clientId, string clientSecret, string email, string servicePlanResourceGroup, bool? useIpBasedSsl, int? rsaKeyLength, Uri acmeBaseUri, int? renewXNumberOfDaysBeforeExpiration, Uri authenticationUri, Uri azureTokenAudience, Uri azureManagementEndpoint, string azureDefaultWebsiteDomainName)
+        public SharedRenewalParameters(string resourceGroup,
+            Guid? subscriptionId,
+            string tenantId,
+            Guid? clientId,
+            string clientSecret,
+            string email,
+            string servicePlanResourceGroup,
+            string otherWebAppResourceGroup,
+            bool? useIpBasedSsl,
+            int? rsaKeyLength,
+            Uri acmeBaseUri,
+            int? renewXNumberOfDaysBeforeExpiration,
+            Uri authenticationUri,
+            Uri azureTokenAudience,
+            Uri azureManagementEndpoint,
+            string azureDefaultWebsiteDomainName)
         {
             ResourceGroup = resourceGroup;
             SubscriptionId = subscriptionId;
@@ -14,6 +29,7 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
             ClientSecret = clientSecret;
             Email = email;
             ServicePlanResourceGroup = servicePlanResourceGroup;
+            OtherWebAppResourceGroup = otherWebAppResourceGroup;
             UseIpBasedSsl = useIpBasedSsl;
             RsaKeyLength = rsaKeyLength;
             AcmeBaseUri = acmeBaseUri;
@@ -31,6 +47,7 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
         public string ClientSecret { get; }
         public string Email { get; }
         public string ServicePlanResourceGroup { get; }
+        public string OtherWebAppResourceGroup { get; }
         public bool? UseIpBasedSsl { get; }
         public int? RsaKeyLength { get; }
         public Uri AcmeBaseUri { get; }

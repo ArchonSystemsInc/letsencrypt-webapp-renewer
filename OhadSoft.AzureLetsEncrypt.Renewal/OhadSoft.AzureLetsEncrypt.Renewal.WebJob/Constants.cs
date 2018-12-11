@@ -13,6 +13,9 @@
         public const string ClientSecretKey = "clientSecret";
         public const string ServicePlanResourceGroupKey = "servicePlanResourceGroup";
         public const string SiteSlotNameKey = "siteSlotName";
+        public const string OtherSiteResourceGroupKey = "otherSiteResourceGroup";
+        public const string OtherSiteName = "otherSiteName";
+        public const string OtherSiteSlotName = "otherSiteSlotName";
         public const string UseIpBasedSslKey = "useIpBasedSsl";
         public const string RsaKeyLengthKey = "rsaKeyLength";
         public const string AcmeBaseUriKey = "acmeBaseUri";

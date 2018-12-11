@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using LetsEncrypt.Azure.Core;
 using LetsEncrypt.Azure.Core.Models;
+using LetsEncrypt.Azure.Core.Services;
 using OhadSoft.AzureLetsEncrypt.Renewal.Configuration;
 
 namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
@@ -42,24 +43,30 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
             Trace.TraceInformation(
                 "Adding SSL cert for '{0}{1}'...",
                 renewalParams.WebApp,
-                renewalParams.GroupName == null ? String.Empty : $"[{renewalParams.GroupName}]");
+                renewalParams.GroupName == null ? string.Empty : $"[{renewalParams.GroupName}]");
 
-            var manager = CertificateManager.CreateKuduWebAppCertificateManager(
-                new AzureWebAppEnvironment(
-                    renewalParams.TenantId,
-                    renewalParams.SubscriptionId,
-                    renewalParams.ClientId,
-                    renewalParams.ClientSecret,
-                    renewalParams.ResourceGroup,
-                    renewalParams.WebApp,
-                    renewalParams.ServicePlanResourceGroup,
-                    renewalParams.SiteSlotName)
-                {
-                    AzureWebSitesDefaultDomainName = renewalParams.AzureDefaultWebsiteDomainName ?? DefaultWebsiteDomainName,
-                    AuthenticationEndpoint = renewalParams.AuthenticationUri ?? new Uri(DefaultAuthenticationUri),
-                    ManagementEndpoint = renewalParams.AzureManagementEndpoint ?? new Uri(DefaultManagementEndpoint),
-                    TokenAudience = renewalParams.AzureTokenAudience ?? new Uri(DefaultAzureTokenAudienceService)
-                },
+            var certServiceSettings = new CertificateServiceSettings { UseIPBasedSSL = renewalParams.UseIpBasedSsl };
+
+            var azureWebAppEnvironment = new AzureWebAppEnvironment(
+                renewalParams.TenantId,
+                renewalParams.SubscriptionId,
+                renewalParams.ClientId,
+                renewalParams.ClientSecret,
+                renewalParams.ResourceGroup,
+                renewalParams.WebApp,
+                renewalParams.ServicePlanResourceGroup,
+                renewalParams.SiteSlotName)
+            {
+                AzureWebSitesDefaultDomainName = renewalParams.AzureDefaultWebsiteDomainName ?? DefaultWebsiteDomainName,
+                AuthenticationEndpoint = renewalParams.AuthenticationUri ?? new Uri(DefaultAuthenticationUri),
+                ManagementEndpoint = renewalParams.AzureManagementEndpoint ?? new Uri(DefaultManagementEndpoint),
+                TokenAudience = renewalParams.AzureTokenAudience ?? new Uri(DefaultAzureTokenAudienceService)
+            };
+
+            var webAppCertificateService = new WebAppCertificateService(azureWebAppEnvironment, certServiceSettings);
+
+            var manager = new CertificateManager(
+                azureWebAppEnvironment,
                 new AcmeConfig
                 {
                     Host = renewalParams.Hosts[0],
@@ -69,8 +76,8 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
                     PFXPassword = Convert.ToBase64String(pfxPassData),
                     BaseUri = (renewalParams.AcmeBaseUri ?? new Uri(DefaultAcmeBaseUri)).ToString()
                 },
-                new CertificateServiceSettings { UseIPBasedSSL = renewalParams.UseIpBasedSsl },
-                new AuthProviderConfig());
+                webAppCertificateService,
+                new KuduFileSystemAuthorizationChallengeProvider(azureWebAppEnvironment, new AuthProviderConfig()));
 
             if (renewalParams.RenewXNumberOfDaysBeforeExpiration > 0)
             {
@@ -78,7 +85,7 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
             }
             else
             {
-                await manager.AddCertificate();
+                var res = await manager.AddCertificate();
             }
 
             Trace.TraceInformation("SSL cert added successfully to '{0}'", renewalParams.WebApp);
