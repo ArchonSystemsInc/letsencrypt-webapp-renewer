@@ -63,7 +63,24 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
                 TokenAudience = renewalParams.AzureTokenAudience ?? new Uri(DefaultAzureTokenAudienceService)
             };
 
+            var otherAzureWebAppEnvironment = new AzureWebAppEnvironment(
+                renewalParams.TenantId,
+                renewalParams.SubscriptionId,
+                renewalParams.ClientId,
+                renewalParams.ClientSecret,
+                renewalParams.OtherWebAppResourceGroup,
+                renewalParams.OtherWebApp,
+                renewalParams.ServicePlanResourceGroup,
+                renewalParams.OtherSlotName)
+            {
+                AzureWebSitesDefaultDomainName = renewalParams.AzureDefaultWebsiteDomainName ?? DefaultWebsiteDomainName,
+                AuthenticationEndpoint = renewalParams.AuthenticationUri ?? new Uri(DefaultAuthenticationUri),
+                ManagementEndpoint = renewalParams.AzureManagementEndpoint ?? new Uri(DefaultManagementEndpoint),
+                TokenAudience = renewalParams.AzureTokenAudience ?? new Uri(DefaultAzureTokenAudienceService)
+            };
+
             var webAppCertificateService = new WebAppCertificateService(azureWebAppEnvironment, certServiceSettings);
+            var otherWebAppCertificateService = new WebAppCertificateService(otherAzureWebAppEnvironment, certServiceSettings);
 
             var manager = new CertificateManager(
                 azureWebAppEnvironment,
@@ -86,6 +103,10 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
             else
             {
                 var res = await manager.AddCertificate();
+                otherWebAppCertificateService.Install(res);
+
+                webAppCertificateService.RemoveExpired();
+                otherWebAppCertificateService.RemoveExpired();
             }
 
             Trace.TraceInformation("SSL cert added successfully to '{0}'", renewalParams.WebApp);
