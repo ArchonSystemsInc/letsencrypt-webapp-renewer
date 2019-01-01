@@ -18,6 +18,8 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.WebJob.Cli
             string clientSecret,
             OptionalString servicePlanResourceGroup,
             OptionalString siteSlotName,
+            OptionalString storageConnectionString,
+            OptionalString storageContainer,
             bool useIpBasedSsl,
             int rsaKeyLength,
             Uri acmeBaseUri,
@@ -37,6 +39,8 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.WebJob.Cli
             ClientSecret = clientSecret;
             ServicePlanResourceGroup = servicePlanResourceGroup;
             SiteSlotName = siteSlotName;
+            StorageConnectionString = storageConnectionString;
+            StorageContainer = storageContainer;
             UseIpBasedSsl = useIpBasedSsl;
             RsaKeyLength = rsaKeyLength;
             AcmeBaseUri = acmeBaseUri;
@@ -76,6 +80,12 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.WebJob.Cli
 
         [Option('d', Constants.SiteSlotNameKey, Required = false, HelpText = "Site Deployment Slot")]
         public OptionalString SiteSlotName { get; }
+
+        [Option(Constants.StorageConnectionString, Required = false, HelpText = "Storage connection string")]
+        public OptionalString StorageConnectionString { get; }
+
+        [Option(Constants.StorageContainer, Required = false, HelpText = "Storage container")]
+        public OptionalString StorageContainer { get; }
 
         [Option('i', Constants.UseIpBasedSslKey, Required = false, Default = false, HelpText = "Use IP Based SSL")]
         public bool UseIpBasedSsl { get; }

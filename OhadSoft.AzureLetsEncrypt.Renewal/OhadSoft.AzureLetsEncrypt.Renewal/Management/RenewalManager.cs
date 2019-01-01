@@ -79,6 +79,15 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
                 TokenAudience = renewalParams.AzureTokenAudience ?? new Uri(DefaultAzureTokenAudienceService)
             };
 
+            var azureStorageEnvironment = new AzureStorageEnvironment(
+                renewalParams.TenantId,
+                renewalParams.SubscriptionId,
+                renewalParams.ClientId,
+                renewalParams.ClientSecret,
+                renewalParams.ResourceGroup,
+                renewalParams.StorageConnectionString,
+                renewalParams.StorageContainer);
+
             var webAppCertificateService = new WebAppCertificateService(azureWebAppEnvironment, certServiceSettings);
             var otherWebAppCertificateService = new WebAppCertificateService(otherAzureWebAppEnvironment, certServiceSettings);
 
@@ -94,7 +103,7 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
                     BaseUri = (renewalParams.AcmeBaseUri ?? new Uri(DefaultAcmeBaseUri)).ToString()
                 },
                 webAppCertificateService,
-                new KuduFileSystemAuthorizationChallengeProvider(azureWebAppEnvironment, new AuthProviderConfig()));
+                new AzureStorageFileSystemAuthorizationChallengeProvider(azureStorageEnvironment));
 
             if (renewalParams.RenewXNumberOfDaysBeforeExpiration > 0)
             {

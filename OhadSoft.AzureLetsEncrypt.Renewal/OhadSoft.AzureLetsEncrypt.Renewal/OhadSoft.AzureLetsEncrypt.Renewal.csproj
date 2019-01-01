@@ -81,6 +81,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\AuthProviderConfig.cs" />
+    <Compile Include="Management\AzureStorageFileSystemAuthorizationChallengeProvider.cs" />
+    <Compile Include="Management\IAzureStorageEnvironment.cs" />
     <Compile Include="Management\SharedRenewalParameters.cs" />
     <Compile Include="Management\IRenewalManager.cs" />
     <Compile Include="Management\RenewalParameters.cs" />
@@ -110,6 +112,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Azure.Management.Websites">
       <Version>1.6.0-preview</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Azure.Storage.Blob">
+      <Version>9.4.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory">
       <Version>2.29.0</Version>

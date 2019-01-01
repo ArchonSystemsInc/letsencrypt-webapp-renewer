@@ -21,6 +21,8 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
         public string OtherWebAppResourceGroup { get; }
         public string OtherWebApp { get; }
         public string OtherSlotName { get; }
+        public string StorageConnectionString { get; }
+        public string StorageContainer { get; }
         public bool UseIpBasedSsl { get; }
         public int RsaKeyLength { get; }
         public Uri AcmeBaseUri { get; }
@@ -45,6 +47,8 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
             string otherWebAppResourceGroup = null,
             string otherWebApp = null,
             string otherSlotName = null,
+            string storageConnectionString = null,
+            string storageContainer = null,
             bool useIpBasedSsl = false,
             int rsaKeyLength = 2048,
             Uri acmeBaseUri = null,
@@ -68,6 +72,8 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
             OtherWebAppResourceGroup = VerifyOptionalString(otherWebAppResourceGroup, nameof(otherWebAppResourceGroup));
             OtherWebApp = VerifyOptionalString(otherWebApp, nameof(otherWebApp));
             OtherSlotName = VerifyOptionalString(otherSlotName, nameof(otherSlotName));
+            StorageConnectionString = VerifyOptionalString(storageConnectionString, nameof(storageConnectionString));
+            StorageContainer = VerifyOptionalString(storageContainer, nameof(storageContainer));
             UseIpBasedSsl = useIpBasedSsl;
             RsaKeyLength = VerifyPositiveInteger(rsaKeyLength, nameof(rsaKeyLength));
             AcmeBaseUri = VerifyOptionalUri(acmeBaseUri, nameof(acmeBaseUri));
@@ -169,6 +175,8 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
                 && string.Equals(OtherWebAppResourceGroup, other.OtherWebAppResourceGroup)
                 && string.Equals(OtherWebApp, other.OtherWebApp)
                 && string.Equals(OtherSlotName, other.OtherSlotName)
+                && string.Equals(StorageConnectionString, other.StorageConnectionString)
+                && string.Equals(StorageContainer, other.StorageContainer)
                 && UseIpBasedSsl == other.UseIpBasedSsl
                 && RsaKeyLength == other.RsaKeyLength
                 && Equals(AcmeBaseUri, other.AcmeBaseUri)
@@ -204,6 +212,8 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
                 hashCode = (hashCode * 397) ^ (OtherWebAppResourceGroup != null ? OtherWebAppResourceGroup.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (OtherWebApp != null ? OtherWebApp.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (OtherSlotName != null ? OtherSlotName.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (StorageConnectionString != null ? StorageConnectionString.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (StorageContainer != null ? StorageContainer.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ UseIpBasedSsl.GetHashCode();
                 hashCode = (hashCode * 397) ^ RsaKeyLength;
                 hashCode = (hashCode * 397) ^ (AcmeBaseUri != null ? AcmeBaseUri.GetHashCode() : 0);
