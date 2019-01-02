@@ -101,7 +101,7 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.WebJob.AppSettings
                     ResolveOptionalSetting(Constants.OtherSiteName, webApp),
                     ResolveOptionalSetting(Constants.OtherSiteSlotName, webApp),
                     ResolveConnectionString(Constants.StorageConnectionString, webApp, sharedRenewalParams.StorageConnectionString),
-                    ResolveOptionalSetting(Constants.StorageContainer, webApp),
+                    ResolveOptionalSetting(Constants.StorageContainer, webApp, sharedRenewalParams.StorageContainer),
                     ResolveOptionalBooleanSetting(Constants.UseIpBasedSslKey, webApp, sharedRenewalParams.UseIpBasedSsl, false),
                     ResolveOptionalInt32Setting(Constants.RsaKeyLengthKey, webApp, sharedRenewalParams.RsaKeyLength, 2048),
                     ResolveOptionalUriSetting(Constants.AcmeBaseUriKey, webApp, sharedRenewalParams.AcmeBaseUri),
