@@ -21,8 +21,6 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.WebJob.Telemetry
         [SuppressMessage("Microsoft.Reliability", "CA2000:DisposeObjectsBeforeLosingScope", Justification = "Lifetime is managed by Application Insights")]
         public static void Setup()
         {
-            TelemetryConfiguration.Active.InstrumentationKey = "32cf968e-40d4-42d3-a2de-037140fd4371";
-
             AddAndInitializeModule<UnhandledExceptionTelemetryModule>();
             AddAndInitializeModule<UnobservedExceptionTelemetryModule>();
 

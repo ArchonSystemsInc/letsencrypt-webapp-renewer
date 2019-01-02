@@ -18,6 +18,9 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.WebJob.Cli
             string clientSecret,
             OptionalString servicePlanResourceGroup,
             OptionalString siteSlotName,
+            OptionalString otherWebAppResourceGroup,
+            OptionalString otherWebApp,
+            OptionalString otherSlotName,
             bool useIpBasedSsl,
             int rsaKeyLength,
             Uri acmeBaseUri,
@@ -37,6 +40,9 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.WebJob.Cli
             ClientSecret = clientSecret;
             ServicePlanResourceGroup = servicePlanResourceGroup;
             SiteSlotName = siteSlotName;
+            OtherWebAppResourceGroup = otherWebAppResourceGroup;
+            OtherWebApp = otherWebApp;
+            OtherSlotName = otherSlotName;
             UseIpBasedSsl = useIpBasedSsl;
             RsaKeyLength = rsaKeyLength;
             AcmeBaseUri = acmeBaseUri;
@@ -76,6 +82,15 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.WebJob.Cli
 
         [Option('d', Constants.SiteSlotNameKey, Required = false, HelpText = "Site Deployment Slot")]
         public OptionalString SiteSlotName { get; }
+
+        [Option(Constants.OtherSiteResourceGroupKey, Required = false, HelpText = "Other web app resource group")]
+        public OptionalString OtherWebAppResourceGroup { get; }
+
+        [Option(Constants.OtherSiteName, Required = false, HelpText = "Other web app")]
+        public OptionalString OtherWebApp { get; }
+
+        [Option(Constants.OtherSiteSlotName, Required = false, HelpText = "Other web app slot")]
+        public OptionalString OtherSlotName { get; }
 
         [Option('i', Constants.UseIpBasedSslKey, Required = false, Default = false, HelpText = "Use IP Based SSL")]
         public bool UseIpBasedSsl { get; }
