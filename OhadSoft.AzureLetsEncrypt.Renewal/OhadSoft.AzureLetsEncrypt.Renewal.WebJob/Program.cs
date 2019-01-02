@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Diagnostics;
+using System.Threading;
 using OhadSoft.AzureLetsEncrypt.Renewal.Management;
 using OhadSoft.AzureLetsEncrypt.Renewal.WebJob.AppSettings;
 using OhadSoft.AzureLetsEncrypt.Renewal.WebJob.Cli;
@@ -15,9 +16,22 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.WebJob
     internal static class Program
     {
         private const string DisableTelemetryEnvVarName = "LETSENCRYPT_DISABLE_TELEMETRY";
+        private const string EnableDebugging = "LETSENCRYPT_DEBUG";
 
         private static int Main(string[] args)
         {
+            if (Environment.GetEnvironmentVariable(EnableDebugging) != null)
+            {
+                Trace.TraceInformation("{0} environment variable detected - waiting for debugger", EnableDebugging);
+
+                while (!Debugger.IsAttached)
+                {
+                    Thread.Sleep(1000);
+                }
+
+                Trace.TraceInformation("Debugger attached!");
+            }
+
             if (Environment.GetEnvironmentVariable(DisableTelemetryEnvVarName) == null)
             {
                 TelemetryHelper.Setup();
