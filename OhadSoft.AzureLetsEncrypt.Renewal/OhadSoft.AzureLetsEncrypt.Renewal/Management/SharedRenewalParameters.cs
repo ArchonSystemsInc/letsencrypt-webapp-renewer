@@ -5,7 +5,8 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
 {
     public sealed class SharedRenewalParameters
     {
-        public SharedRenewalParameters(string resourceGroup,
+        public SharedRenewalParameters(
+            string resourceGroup,
             Guid? subscriptionId,
             string tenantId,
             Guid? clientId,
@@ -13,6 +14,8 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
             string email,
             string servicePlanResourceGroup,
             string otherWebAppResourceGroup,
+            string storageConnectionString,
+            string storageContainer,
             bool? useIpBasedSsl,
             int? rsaKeyLength,
             Uri acmeBaseUri,
@@ -30,6 +33,8 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
             Email = email;
             ServicePlanResourceGroup = servicePlanResourceGroup;
             OtherWebAppResourceGroup = otherWebAppResourceGroup;
+            StorageConnectionString = storageConnectionString;
+            StorageContainer = storageContainer;
             UseIpBasedSsl = useIpBasedSsl;
             RsaKeyLength = rsaKeyLength;
             AcmeBaseUri = acmeBaseUri;
@@ -48,6 +53,8 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
         public string Email { get; }
         public string ServicePlanResourceGroup { get; }
         public string OtherWebAppResourceGroup { get; }
+        public string StorageConnectionString { get; }
+        public string StorageContainer { get; }
         public bool? UseIpBasedSsl { get; }
         public int? RsaKeyLength { get; }
         public Uri AcmeBaseUri { get; }

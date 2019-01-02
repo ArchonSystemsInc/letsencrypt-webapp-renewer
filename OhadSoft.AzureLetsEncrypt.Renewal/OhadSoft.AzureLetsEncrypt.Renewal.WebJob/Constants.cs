@@ -16,6 +16,8 @@
         public const string OtherSiteResourceGroupKey = "otherSiteResourceGroup";
         public const string OtherSiteName = "otherSiteName";
         public const string OtherSiteSlotName = "otherSiteSlotName";
+        public const string StorageConnectionString = "storageConnectionString";
+        public const string StorageContainer = "storageContainer";
         public const string UseIpBasedSslKey = "useIpBasedSsl";
         public const string RsaKeyLengthKey = "rsaKeyLength";
         public const string AcmeBaseUriKey = "acmeBaseUri";

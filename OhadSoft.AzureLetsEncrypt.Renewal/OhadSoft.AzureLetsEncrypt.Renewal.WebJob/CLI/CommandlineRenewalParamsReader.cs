@@ -47,6 +47,8 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.WebJob.Cli
                     parsed.OtherWebAppResourceGroup,
                     parsed.OtherWebApp,
                     parsed.OtherSlotName,
+                    parsed.StorageConnectionString,
+                    parsed.StorageContainer,
                     parsed.UseIpBasedSsl,
                     parsed.RsaKeyLength,
                     parsed.AcmeBaseUri,
