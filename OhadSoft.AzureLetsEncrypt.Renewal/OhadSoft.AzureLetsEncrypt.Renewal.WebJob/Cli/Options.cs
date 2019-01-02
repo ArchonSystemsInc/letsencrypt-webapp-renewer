@@ -95,7 +95,7 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.WebJob.Cli
 
         [Option(Constants.OtherSiteSlotName, Required = false, HelpText = "Other web app slot")]
         public OptionalString OtherSlotName { get; }
-        
+
         [Option(Constants.StorageConnectionString, Required = false, HelpText = "Storage connection string")]
         public OptionalString StorageConnectionString { get; }
 
