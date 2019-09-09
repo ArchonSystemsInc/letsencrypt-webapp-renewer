@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using LetsEncrypt.Azure.Core;
 using LetsEncrypt.Azure.Core.Models;
 using LetsEncrypt.Azure.Core.Services;
-using OhadSoft.AzureLetsEncrypt.Renewal.Configuration;
 
 namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
 {
@@ -62,6 +61,31 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
                 ManagementEndpoint = renewalParams.AzureManagementEndpoint ?? new Uri(DefaultManagementEndpoint),
                 TokenAudience = renewalParams.AzureTokenAudience ?? new Uri(DefaultAzureTokenAudienceService)
             };
+
+            AzureWebAppEnvironment otherAzureWebAppEnvironment = null;
+            WebAppCertificateService otherWebAppCertificateService = null;
+
+            if (renewalParams.OtherWebAppResourceGroup != null && renewalParams.OtherWebApp != null)
+            {
+                otherAzureWebAppEnvironment = new AzureWebAppEnvironment(
+                    renewalParams.TenantId,
+                    renewalParams.SubscriptionId,
+                    renewalParams.ClientId,
+                    renewalParams.ClientSecret,
+                    renewalParams.OtherWebAppResourceGroup,
+                    renewalParams.OtherWebApp,
+                    renewalParams.ServicePlanResourceGroup,
+                    renewalParams.OtherSlotName)
+                {
+                    AzureWebSitesDefaultDomainName =
+                        renewalParams.AzureDefaultWebsiteDomainName ?? DefaultWebsiteDomainName,
+                    AuthenticationEndpoint = renewalParams.AuthenticationUri ?? new Uri(DefaultAuthenticationUri),
+                    ManagementEndpoint = renewalParams.AzureManagementEndpoint ?? new Uri(DefaultManagementEndpoint),
+                    TokenAudience = renewalParams.AzureTokenAudience ?? new Uri(DefaultAzureTokenAudienceService)
+                };
+
+                otherWebAppCertificateService = new WebAppCertificateService(otherAzureWebAppEnvironment, certServiceSettings);
+            }
 
             var azureStorageEnvironment = new AzureStorageEnvironment(
                 renewalParams.TenantId,
@@ -120,7 +144,6 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
             {
                 var res = await manager.AddCertificate();
                 webAppCertificateService.RemoveExpired();
-
                 otherWebAppCertificateService?.Install(res);
                 otherWebAppCertificateService?.RemoveExpired();
             }
