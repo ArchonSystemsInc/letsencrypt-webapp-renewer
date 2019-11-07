@@ -65,7 +65,7 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
             AzureWebAppEnvironment otherAzureWebAppEnvironment = null;
             WebAppCertificateService otherWebAppCertificateService = null;
 
-            if (renewalParams.OtherWebAppResourceGroup != null && renewalParams.OtherWebApp != null)
+            if (!string.IsNullOrEmpty(renewalParams.OtherWebAppResourceGroup) && !string.IsNullOrEmpty(renewalParams.OtherWebApp))
             {
                 otherAzureWebAppEnvironment = new AzureWebAppEnvironment(
                     renewalParams.TenantId,
@@ -77,8 +77,7 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
                     renewalParams.ServicePlanResourceGroup,
                     renewalParams.OtherSlotName)
                 {
-                    AzureWebSitesDefaultDomainName =
-                        renewalParams.AzureDefaultWebsiteDomainName ?? DefaultWebsiteDomainName,
+                    AzureWebSitesDefaultDomainName = renewalParams.AzureDefaultWebsiteDomainName ?? DefaultWebsiteDomainName,
                     AuthenticationEndpoint = renewalParams.AuthenticationUri ?? new Uri(DefaultAuthenticationUri),
                     ManagementEndpoint = renewalParams.AzureManagementEndpoint ?? new Uri(DefaultManagementEndpoint),
                     TokenAudience = renewalParams.AzureTokenAudience ?? new Uri(DefaultAzureTokenAudienceService)
@@ -111,30 +110,6 @@ namespace OhadSoft.AzureLetsEncrypt.Renewal.Management
                 },
                 webAppCertificateService,
                 new AzureStorageFileSystemAuthorizationChallengeProvider(azureStorageEnvironment));
-
-            WebAppCertificateService otherWebAppCertificateService = null;
-            if (!string.IsNullOrEmpty(renewalParams.OtherWebAppResourceGroup)
-                && !string.IsNullOrEmpty(renewalParams.OtherWebApp))
-            {
-                var otherAzureWebAppEnvironment = new AzureWebAppEnvironment(
-                    renewalParams.TenantId,
-                    renewalParams.SubscriptionId,
-                    renewalParams.ClientId,
-                    renewalParams.ClientSecret,
-                    renewalParams.OtherWebAppResourceGroup,
-                    renewalParams.OtherWebApp,
-                    renewalParams.ServicePlanResourceGroup,
-                    renewalParams.OtherSlotName)
-                {
-                    AzureWebSitesDefaultDomainName =
-                        renewalParams.AzureDefaultWebsiteDomainName ?? DefaultWebsiteDomainName,
-                    AuthenticationEndpoint = renewalParams.AuthenticationUri ?? new Uri(DefaultAuthenticationUri),
-                    ManagementEndpoint = renewalParams.AzureManagementEndpoint ?? new Uri(DefaultManagementEndpoint),
-                    TokenAudience = renewalParams.AzureTokenAudience ?? new Uri(DefaultAzureTokenAudienceService)
-                };
-
-                otherWebAppCertificateService = new WebAppCertificateService(otherAzureWebAppEnvironment, certServiceSettings);
-            }
 
             if (renewalParams.RenewXNumberOfDaysBeforeExpiration > 0)
             {
